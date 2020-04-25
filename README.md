@@ -1,4 +1,4 @@
-# Event Driven News
+# Event Driven News V1.0.1
 
 Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035
 
@@ -7,7 +7,16 @@ Event Driven News is a mod for X4 which adds dynamic event based news and report
 Place the 'event_driven_news' folder into your X4 Foundations extensions folder.  This mod does not require a fresh game start and is to the best of my knowledge safe to remove.  Make a backup of your save just in case
 
 ## Known Issues
-On a brand new game start, you will receive faction HQ destruction news events.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
+On a brand new game start, you will receive faction HQ destruction news events after the universe first initializes.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
+
+## Change Log
+### 1.0.1
+- Removed SCA from ware shortage/surplus/shipping events - a news network probably shouldn't be reporting on SCA logistics 
+- Bumped up frequency of ware surplus/shortage events, was too low
+- Some edits to content.xml so the version and name show correctly
+
+### 1.0.0
+Initial release
 
 ## Feeds and Events
 Currently, there is one active feed - GNN
