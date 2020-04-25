@@ -1,6 +1,6 @@
 # Event Driven News
 
-Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035&p=4942695#p4942695
+Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035
 
 ## Installation
 
