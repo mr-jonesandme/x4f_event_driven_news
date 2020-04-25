@@ -13,12 +13,12 @@ On a brand new game start, you will receive faction HQ destruction news events. 
 Currently, there is one active feed - GNN
 
 ### GNN 
-The GNN feed reports on general galaxy wide events, logging into the player's "tips" logbook. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
-- Sector ownership changes
-- Rebuilt faction HQ's
-- Sector ware shipping issues
-- Sector ware shortage events
-- Sector ware surplus events
+The GNN feed reports on general galaxy events, logging into the player's "tips" logbook. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
+- Sector ownership changes (includes player faction)
+- Rebuilt faction HQ's (NPC factions only)
+- Sector ware shipping issues (NPC factions, excluding Xenon)
+- Sector ware shortage events (NPC factions, excluding Xenon)
+- Sector ware surplus events (NPC factions, excluding Xenon)
 
 ### Additional planned GNN features
 - Basic UI for toggling news events on/off
