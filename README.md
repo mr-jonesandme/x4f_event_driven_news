@@ -16,7 +16,6 @@ The GNN feed reports on general galaxy wide events, logging into the player's "t
 - Sector ware shipping issues
 - Sector ware shortage events
 - Sector ware surplus events
-- Pirate raid rumors
 
 ## Premium Feeds
 The following "premium" feeds are planned in a future update.  In contrast to the GNN feed, these will be more analytical in nature and help guide players in military and economic objectives
