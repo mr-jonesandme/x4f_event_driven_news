@@ -4,10 +4,10 @@ Event Driven News is a mod for X4 which adds dynamic event based news and report
 
 ## Installation
 
-Place the 'event_driven_news' folder into your X4 Foundations extensions folder
+Place the 'event_driven_news' folder into your X4 Foundations extensions folder.  This mod does not require a fresh game start and is to the best of my knowledge safe to remove.  Make a backup of your save just in case
 
 ## Known Issues
-On initial game startup, you will receive faction HQ destruction news events.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
+On a brand new game start, you will receive faction HQ destruction news events.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
 
 ## Feeds and Events
 Currently, there is one active feed - GNN
