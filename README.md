@@ -1,22 +1,30 @@
 # Event Driven News
 
-Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035&p=4942695#p4942695
+Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035
 
 ## Installation
 
-Place the 'event_driven_news' folder into your X4 Foundations extensions folder
+Place the 'event_driven_news' folder into your X4 Foundations extensions folder.  This mod does not require a fresh game start and is to the best of my knowledge safe to remove.  Make a backup of your save just in case
+
+## Known Issues
+On a brand new game start, you will receive faction HQ destruction news events.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
 
 ## Feeds and Events
 Currently, there is one active feed - GNN
 
 ### GNN 
-The GNN feed reports on general galaxy wide events, logging into the player's "tips" logbook. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
-- Sector ownership changes
-- Rebuilt faction HQ's
-- Sector ware shipping issues
-- Sector ware shortage events
-- Sector ware surplus events
-- Pirate raid rumors
+The GNN feed reports on general galaxy events, logging into the player's "tips" logbook. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
+- Sector ownership changes (includes player faction)
+- Rebuilt faction HQ's (NPC factions only)
+- Sector ware shipping issues (NPC factions, excluding Xenon)
+- Sector ware shortage events (NPC factions, excluding Xenon)
+- Sector ware surplus events (NPC factions, excluding Xenon)
+
+### Additional planned GNN features
+- Basic UI for toggling news events on/off
+- Rumors regarding pirate raids targetting specific stations (by tapping into PlunderNet)
+- Rumors regarding Xenon I sightings
+- More variety/X lore friendly reporting
 
 ## Premium Feeds
 The following "premium" feeds are planned in a future update.  In contrast to the GNN feed, these will be more analytical in nature and help guide players in military and economic objectives
