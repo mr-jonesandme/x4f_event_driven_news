@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<diff>
+	<!-- Watch for factions requesting high priority freighters/miners.  This a transportation issue (not enough traders) -->
+	<add sel="//cue[@name='Request_Freighter']/actions/do_if[@value='$DebugChance == 100']" pos="before">
+		<do_if value="$Priority">
+			<signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Freighter_Needed" param="[$Ware, $Requester, $Faction, $Miner, $RequestSector]"/>
+		</do_if>
+	</add>
+	<!-- Watch for factions requesting a new factory.  This indicates a ware shortage -->
+	<add sel="//cue[@name='Request_Factory']/actions/do_if[@value='$Ware.tags.indexof.{tag.minable}']" pos="before">
+		<signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Factory_Needed" param="[$Ware, $RequestSector, $Faction]"/>
+	</add>
+	<!-- Watch for factions requesting a pause of production modules due to overflowing wares.  Indicates ware surplus -->
+	<add sel="//cue[@name='Pause_Production_Module']/actions/do_elseif[@value='$Product.tags.indexof.{tag.minable}']" pos="before">
+		<signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Pause_Production" param="[$Product, $RequestSector, $Faction]"/>
+	</add>
+</diff>

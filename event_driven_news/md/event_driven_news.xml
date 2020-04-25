@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+	<!-- This mod adds a variety of event driven gameplay news stories to the players logbook -->
+	<!-- Script logging schema -->
+	<!-- 2020-04-25 06:07:54 [EventKeyword] Event='Description' EventAction='Action that occured' <additional fields (Sector, PreviousFaction, NewFaction) Logbook='Visible to player or not' FeedType='Type of feed'-->
+	<cues>
+		<!-- GNN NEWS FEED - Fair and mostly accurate-->
+		<!-- Track and report on sectors that change ownership  -->
+		<cue name="Populate_Sectors">
+			<conditions>
+				<check_any>
+					<event_game_started/>
+					<event_game_loaded/>
+				</check_any>
+			</conditions>
+			<actions>
+				<find_sector groupname="$Sectors" space="player.galaxy" multiple="true"/>
+			</actions>
+			<cues>
+				<cue name="SectorDetails_Update" instantiate="true">
+					<conditions>
+						<event_game_loaded/>
+					</conditions>
+					<actions>
+						<find_sector groupname="$Sectors" space="player.galaxy" multiple="true"/>
+					</actions>
+				</cue>
+				<!-- Report on five types of sector ownership changes (includes player faction).  
+				1. Faction has lot control of a sector, sector now ownerless
+				2. Faction has annexed an ownerless sector
+				3. Xenon seize ownerless sector
+				4. Xenon seize a sector from another faction
+				5. Faction takes a sector from another faction
+				-->
+				<cue name="New_Sector_Owner_Headline" instantiate="true">
+					<conditions>
+						<!--  Event for the specified object changing owner (object = owner changing object, param = new owner faction, param2 = previous owner faction) -->
+						<event_object_changed_owner group="$Sectors"/> 
+					</conditions>
+					<delay max="5min"/>
+					<actions>
+						<set_value name="$GameAge" exact="player.age"/>
+					<!-- Show sector ownership headlines regardless of if the player is even aware of the sector or not.  We will induce a delay for this event for balancing - intel reports will arrive quicker -->
+						<!-- <do_if value="event.object.isknown and (event.param2 == faction.player or event.param2.hasrelation.friend.{faction.player} or event.param.hasrelation.friend.{faction.player})"> -->
+						<do_if value="event.param == faction.ownerless and event.param2 != faction.xenon">
+						<!-- Faction has lost control of a sector-->
+							<!-- Lookup faction managers first-->
+							<set_value name="$Faction" exact="event.param2.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$Body" exact="'Rumors indicate that the %1 has lost control of sector %2.  Representatives of the %1, when reached out to comment on the matter, dismissed this as speculative propoganda perpetuated by hostile actors'.[$Faction, $ChangedSector]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 lost %2'.[$Faction, $ChangedSector]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Sector ownerless\' Sector=\'%2\' PreviousFaction=\'%3\' NewFaction=\'Ownerless\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $Faction]"/>
+						</do_if>
+						<do_elseif value="event.param2 == faction.ownerless">
+						<!-- Faction has seized an ownerless sector-->
+							<set_value name="$Faction" exact="event.param.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$Body" exact="'In what may be seen as an aggressive move to many unaffiliated parties, the %1 has annexed the formerly ownerless sector %2.  Officials said the movement should be welcomed by neutral parties as the %1 will ensure the safety and security of the sector while investing billions of credits into new economic ventures.'.[$Faction, $ChangedSector, $FactionRep]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 annexes %2'.[$Faction, $ChangedSector]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Ownerless sector claimed\' Sector=\'%2\' PreviousFaction=\'Ownerless\' NewFaction=\'%3\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $Faction]"/>
+						</do_elseif>
+						<do_elseif value="event.param == faction.xenon and event.param2 == faction.ownerless">
+							<!-- Xenon seize an ownerless sector-->
+							<set_value name="$Faction" exact="event.param.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$Body" exact="'We are hearing reports from officials from multiple factions declaring all non-military traffic to be banned from transisting through sector %1.  An unnamed recon pilot has shared with us that the %2 have constructed a number of stations in this sector.  He added that the Teladi freighter pilots continuing to use the sector as a shortcut should reconsider the value of their lives and the lives of their crew in relation to the cargo in their holds.  Additionally, our inside sources in the neighboring systems say that in response, there has been a large increase in military activity as factions shore up their defenses.  Government officials are reportedly preparing evacuation orders for non-essential personnel in neighboring systems'.[$ChangedSector, $Faction]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 advance to %2'.[$Faction, $ChangedSector]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Ownerless sector claimed\' Sector=\'%2\' PreviousFaction=\'Ownerless\' NewFaction=\'%3\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $Faction]"/>
+						</do_elseif>
+						<do_elseif value="event.param == faction.xenon">
+							<!-- Xenon seize a sector from another faction-->
+							<set_value name="$Faction" exact="event.param.name"/>
+							<set_value name="$OldFaction" exact="event.param2.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$Body" exact="'To the shock of many, officials from %1 are reporting that they are unable to keep back the Xenon from sector %2.  Officials are urging any remaining holdouts to regroup and leave the system before it is too late - civilians should report to the nearest colony station for refugee assistance, and any pilots willing to aid in rescue and combat efforts should report for duty at the nearest %1 defense station'.[$OldFaction, $ChangedSector]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 terrorize %2'.[$Faction, $ChangedSector]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Sector faction change\' Sector=\'%2\' PreviousFaction=\'%3\' NewFaction=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $OldFaction, $Faction]"/>
+						</do_elseif>
+						<do_elseif value="event.param == faction.ownerless and event.param2 == faction.xenon">
+							<!-- Xenon lose control of a sector-->
+							<set_value name="$OldFaction" exact="event.param2.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$Body" exact="'Rumors indicate that the %1 has lost control of sector %2.  Officials advise caution on any civilian traffic wishing to enter the system, urging the need for patrols to ensure Xenon forces have completely vacated the area'.[$OldFaction, $ChangedSector]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 cleared from %2'.[$OldFaction, $ChangedSector]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Sector ownerless\' Sector=\'%2\' PreviousFaction=\'%3\' NewFaction=\'Ownerless\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $Faction]"/>
+						</do_elseif>
+						<do_elseif value="event.param2 == faction.xenon">
+							<!-- Faction has taken over a sector from the xenon -->
+							<set_value name="$Faction" exact="event.param.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$OldFaction" exact="event.param2.name"/>
+							<set_value name="$Body" exact="'Our frontline correspondents are reporting that %1 has liberated sector %3 from the Xenon.  Future clearing incursions into Xenon territory are planned after forces have had time to repair, rearm, and recover'.[$Faction, $OldFaction, $ChangedSector, $FactionRep]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%2 liberated from %3'.[$Faction, $ChangedSector, $OldFaction]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Sector faction change\' Sector=\'%2\' PreviousFaction=\'%3\' NewFaction=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $OldFaction, $Faction]"/>
+						</do_elseif>
+						<do_else>
+						<!-- Faction has taken over a sector from the old faction -->
+							<set_value name="$Faction" exact="event.param.name"/>
+							<set_value name="$ChangedSector" exact="event.object.knownname"/>
+							<set_value name="$OldFaction" exact="event.param2.name"/>
+							<set_value name="$Body" exact="'Our frontline correspondents are reporting that %1 has forced %2 to retreat in full from sector %3.  The %1 fleet admiral was quoted as declaring the event a grand victory and praised members of the strike fleet for their hard efforts in locking down the sector, while issuing a wide broadcast warning that retaliation will be met with a brutal response from the %1 .  Officials from the %2 have declined to comment on the matter.'.[$Faction, $OldFaction, $ChangedSector, $FactionRep]"/>
+							<set_value name="$Ticker" exact="'GNN Politics'" />
+							<set_value name="$Headline" exact="'%1 seizes sector %2 from %3'.[$Faction, $ChangedSector, $OldFaction]" />
+							<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+							<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+							<play_sound object="player.entity" sound="'notification_generic'"/>
+							<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Territory]' + ' ' + 'GameAge=\'%1\' Event=\'TerritoryChange\' EventAction=\'Sector faction change\' Sector=\'%2\' PreviousFaction=\'%3\' NewFaction=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $ChangedSector, $OldFaction, $Faction]"/>
+						</do_else>
+					</actions>
+				</cue>
+			</cues>
+		</cue>
+		<!-- When a Faction is assigned a new HQ, report on where the HQ moved to and who the new rep is  -->
+		<cue name="New_HQ_Headline" instantiate="true">
+			<conditions>
+				<event_faction_headquarters_changed/>
+			</conditions>
+			<delay exact="5min"/> <!-- add a delay timer to prevent race condition where HQ has changed but new rep has not been assigned-->
+			<actions>
+				<set_value name="$GameAge" exact="player.age"/>
+				<set_value name="$Faction" exact="event.param" />
+				<set_value name="$Rep" exact="md.$FactionData.{$Faction}.$Representative.knownname" />
+				<set_value name="$HQ" exact="md.$FactionData.{$Faction}.$Headquarters.knownname"/>
+				<set_value name="$Sector" exact="md.$FactionData.{$Faction}.$Headquarters.sector.knownname"/>
+				<set_value name="$Body" exact="'We are receiving reports that the %1 HQ was destroyed, the cause of which is unknown at this time. Sources say that %2 is slated to takeover, and will be restarting operations from the %3 station in the %4 sector.  The whereabouts or status of the former leader are currently unknown'.[$Faction, $Rep, $HQ, $Sector]"/>
+				<set_value name="$Ticker" exact="'GNN Politics'" />
+				<set_value name="$Headline" exact="'%1 HQ Destroyed'.[$Faction, $Rep, $Sector]" />
+				<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+				<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+				<play_sound object="player.entity" sound="'notification_generic'"/>
+				<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Faction]' + ' ' + 'GameAge=\'%1\' Event=\'HQChange\' EventAction=\'New HQ and faction representative\' Sector=\'%2\' Faction=\'%3\' Station=\'%4\' Rep=\'%5\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Sector, $Faction, $HQ, $Rep]"/>
+				<remove_value name="$Faction" />
+				<remove_value name="$Rep" />
+				<remove_value name="$Body" />
+				<remove_value name="$Ticker" />
+				<remove_value name="$Headline" />
+			</actions>
+		</cue>
+		<!-- Shipping issues.  Intercept faction "chatter" requesting high priority freighters -->
+		<!-- <signal_cue_instantly cue="md.GNN_Feed.Market_Chatter_Freighter_Needed" param="[$Ware, $Requester, $Faction, $Miner, $RequestSector]"/> -->
+		<cue name="Market_Chatter_Freighter_Needed" instantiate="true">
+			<conditions>
+				<event_cue_signalled/>
+				<check_value value="@event.param.{3} != faction.xenon"/>
+			</conditions>
+			<actions>
+				<set_value name="$GameAge" exact="player.age"/>
+				<set_value name="$Ware" exact="event.param.{1}"/>
+				<set_value name="$Requester" exact="event.param.{2}"/>
+				<set_value name="$Faction" exact="event.param.{3}"/>
+				<set_value name="$Miner" exact="event.param.{4}"/>
+				<set_value name="$RequestSector" exact="event.param.{5}"/>
+				<do_if value="$RequestSector">
+					<set_value name="$Requester" exact="$RequestSector"/>
+				</do_if>
+				<do_any>
+					<set_value name="$Body" exact="'Station operators grow increasingly anxious as goods accumulate rapidly in station storage.  Individuals familiar with the haulage of %2 in %1 have shared with us that there is currently a shortage of pilots and freighters to meet demands'.[$Requester.knownname, $Ware]"/>
+					<set_value name="$Body" exact="'We are hearing rumors that pilots capable of carrying %2 have been flocking to %1 due to increasing shipping needs between stations.  Station operators are reportedly selling at a discount to clear excess stock from their storage depots'.[$Requester.knownname, $Ware]"/>
+					<set_value name="$Body" exact="'The effects of the war are being felt by %3 today as freighter pilots have been conscripted to hauling critical materials to the front, instead of engaging on their usual %2 trade routes in %1.  As a result, station storage is growing tight as goods yet to be hauled pile up in the cargo bays'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+					<set_value name="$Body" exact="'It is a good time to be in the shipping industry today as %3 news continues to roll in about a shortage of freighter pilots for moving goods in %2'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+					<set_value name="$Body" exact="'Our favorite Teladi friend tells us that shipping industries can extract the most profit right now in REDACTED sector, especially if they are specialized in REDACTED wares.  Interested in more?  Consider a lifetime subscription to a Teladi Trading Terminal to start down the path of UNLIMITED profitsss'"/>
+					<set_value name="$Body" exact="'%3 sector security in %1 has their hands busy today as stations become lucrative targets for pirates.  Evidently, stations are dealing with a shipping problem, with too many goods continuing to pile up on the docks. An easy target for criminals'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+				</do_any>
+				<set_value name="$Ticker" exact="'GNN Markets'" />
+				<set_value name="$Headline" exact="'%1 logistics concerns'.[$Requester.knownname, $Ware]" />
+				<do_any>
+					<do_all weight="2">
+						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+						<play_sound object="player.entity" sound="'notification_generic'"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Transportation issue\' EventAction=\'Freighter requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+					<do_all weight="98">
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Transportation issue\' EventAction=\'Freighter requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+				</do_any>
+			</actions>	
+		</cue>
+		<!-- Production shortage.  Intercept faction "chatter" where the faction economy manager requests the creation of a new station -->
+		<!-- <signal_cue_instantly cue="md.GNN_Feed.Market_Chatter_Factory_Needed" param="[$Ware, $RequestSector, $Faction]"/> -->
+		<cue name="Market_Chatter_Factory_Needed" instantiate="true">
+			<conditions>
+				<event_cue_signalled/>
+				<check_value value="@event.param.{3} != faction.xenon"/>
+			</conditions>
+			<actions>
+				<set_value name="$GameAge" exact="player.age"/>
+				<set_value name="$Ware" exact="event.param.{1}"/>
+				<set_value name="$Requester" exact="event.param.{2}"/>
+				<set_value name="$Faction" exact="event.param.{3}"/>
+				<do_if value="$Ware.tags.indexof.{tag.minable}">
+					<do_any>
+						<set_value name="$Body" exact="'Market analysts are saying that %1 has been experiencing a crippling shortage of %2.  Officials say that miners are being paid additional for loads in an attempt to resolve the issue.  The shortage is likely to ripple throughout the market'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'According to economic reports, %1 is currently in need of stations to process %2.  Please speak with your nearest %3 licensing office to inquire about purchasing a plot to take part in this investment opportunity'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'Our unnamed Teladi source has big news on the next big spike in ore prices.  Wed love to share these profitsss and more with you - and we will - once you purchase your Teladi Trading Terminal!'"/>
+					</do_any>
+				</do_if>
+				<do_else>
+					<do_any>
+						<set_value name="$Body" exact="'Market chatter indicates that over the coming days, %1 will experience a shortage of %2.  Sector officials allegedly have put out a high priority message on unsactioned back channels, offering increased bids for the wares in demand'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'Our Teladi friends tell us that %1, REDACTED, and REDACTED wares are surging in demand at REDACTED station in REDACTED sector! Interested in more?  Purchase a Teladi Trading Terminal today! TTT - the finest in economic reports, trade ideas, and production analysis in the galaxy.'.[$Ware, $Requester.knownname]"/>
+						<set_value name="$Body" exact="'A %3 commodity analyst has made a bold prediction that %1 will experience a dramatic spike in needed %2 in the coming days.  Station officials have denied these rumors, stating that all operations have been nominal.  '.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'There was great excitement today on the %3 Stock Exchange floor today as traders forecasts of a %2 shortage in %1 appear to be paying off. Traders have been speculating for some time that due to the ongoing conflict, %1 would experience a dramatic increase in demand'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'%3 trade officials have allegedly banned all exports of all %1 to %2 today, citing a trade regulation which allows them to redirect all specified goods output to supporting the ongoing civil war with the HOP.  Analysts note that this action may be indicitative of a growing shortage of the goods in question, though the issue may not necessarily manifest first in Godrealm space'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'Tensions between the Split and Argon Federation heightened today after a spat took place in a Teladi docking bay, as traders fought over a supply contract for %2 goods to deliver to %1.  Teladi security reportedly settled the dispute by confiscating the goods, citing a violation of trade protocols.'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'News has been circulating across local trade station outlets that %1 is experiencing a shortage of food and medical supplies.  Analysts advise caution noting to - sell the news and buy the rumor. '.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'Its a busy day today on the %3 trading floor as prices for %2 soar in %1.  MarketTalk has seen a surge in traffic volumes to %1 as transporters capitalize on the opportunity '.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+					</do_any>
+				</do_else>
+				<set_value name="$Ticker" exact="'GNN Markets'" />
+				<set_value name="$Headline" exact="'Surge in demand for %2'.[$Requester.knownname, $Ware]" />
+				<do_any>
+					<do_all weight="5">
+						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+						<play_sound object="player.entity" sound="'notification_generic'"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Production Shortage\' EventAction=\'Factory requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+					<do_all weight="95">
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Production Shortage\' EventAction=\'Factory requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+				</do_any>
+			</actions>
+		</cue>
+		<!-- Ware surplus.  Intercept faction chatter where the faction economy manager requests the halting of production modules for a given product -->
+		<!-- <signal_cue_instantly cue="md.GNN_Feed.Market_Chatter_Pause_Production" param="[$Product, $RequestSector, $Faction]"/>-->
+		<cue name="Market_Chatter_Pause_Production" instantiate="true">
+			<conditions>
+				<event_cue_signalled/>
+				<check_value value="@event.param.{3} != faction.xenon"/>
+			</conditions>
+			<actions>
+				<set_value name="$GameAge" exact="player.age"/>
+				<set_value name="$Ware" exact="event.param.{1}"/>
+				<set_value name="$Requester" exact="event.param.{2}"/>
+				<set_value name="$Faction" exact="event.param.{3}"/>
+				<do_if value="$Ware.tags.indexof.{tag.minable}">
+					<do_any>
+						<set_value name="$Body" exact="'Local mining companies are in disarray after some sectors in %2 space experiences a bust in %1 buying prices. %2 officials say it could take weeks for mining to become a profitable activity again in this region.  For more detailed information about this event, consider purchasing a subscription to a Teladi Trading Terminal.'.[$Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'According to economic reports, %1 is currently in need of refineries to process %2.  Please speak with your nearest %3 licensing office to inquire about purchasing a plot to take part in this exciting investment opportunity'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'Rumors amongst the mining outfits suggest that prices in %1 are too low for the business of %2 resource extraction to be a profitable venture'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'GNN MarketTalk analysts are noticing a decreasing trend in the volume of mining traffic in %1.  Analysts suggest that prices for raw resources may be too low to continue to attract mining companies in this sector'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'______ ores are experiencing a massive drop in pricing in _______ sector.  Want to fill in the blanks and earn more profitsss?  Purchase a Teladi Trading Terminal today!.  This commercial segment is by TTT - good profitsss to you - but only if you are a subscriber.'"/>
+					</do_any>
+				</do_if>
+				<do_else>
+					<do_any>
+						<set_value name="$Body" exact="'Fear and loathing today on the %2 trading floor as bids for %1 seemingly evaporated overnight.  The problem appears to be with a glut in wares in some sectors controlled by %2'.[$Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'Workers experienced in producing %2 today leave stations around %1 in droves, as production lines seize up.  According to local reports, the production of %2 simply is no longer profitable, as unpurchased goods fill up in station storage.'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'%3 officials are mandating a decrease in prices of %2 today in some sectors due to an unprecedented surplus of unpurchased products.  Most station operators have begrudgingly complied with the order, lowering prices in an effort to free up inventory on their stations'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'It looks like the start of a new bust in %1 today as one by one, station managers begin halting production lines for %2.  Individuals familiar with the matter tell us that there simply is not enough demand for %2 for it to be worth producing'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'%1 and REDACTED wares are overflowing the cargo bays today in the REDACTED station in REDACTED sector. Want to fill in the blanks and earn more profitsss?  Purchase a Teladi Trading Terminal today! TTT - the finest in economic reports, trades rumors, and production analysis in the galaxy.'.[$Ware, $Requester.knownname]"/>
+						<set_value name="$Body" exact="'%1 Sector security is dealing with increased occurences of civil disturbances, after local stations were forced to lay off a large percentage of their work forces.  Station managers say they regret the decision but, due to local economic conditions, they were forced to shut down production lines for %2 due to lack of demand'.[$Requester.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'An anonymous Teladi freighter captain shared with us today that demand appears to be falling off for %2 in some %1 sectors.  Unfortunately, due to agreements made with this Teladi, we are only making the precise details about this situation available in your nearest Teladi Trading Terminal.  Consider buying a subscription today!'.[$Faction.knownname, $Ware]"/>
+						<set_value name="$Body" exact="'%3 officials would like to remind all recently unemployed %2 manufacturers that professional begging is not an acceptable career alternative.  Please report to the nearest sector unemployment office for placement at a new factory'.[$Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'Companies specialized in the production of %2 are starting to feel squeezed as the cost and time to produce exceed the value of the end product in some sectors of %3 space'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
+					</do_any>
+				</do_else>
+				<set_value name="$Ticker" exact="'GNN Markets'" />
+				<set_value name="$Headline" exact="'Bust in %2 prices'.[$Requester.knownname, $Ware]" />
+				<do_any>
+					<do_all weight="5">
+						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
+						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
+						<play_sound object="player.entity" sound="'notification_generic'"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Excess Wares\' EventAction=\'Pause Production\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+					<do_all weight="95">
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Excess Wares\' EventAction=\'Pause Production\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
+					</do_all>
+				</do_any>
+			</actions>
+		</cue>
+		<!-- TODO: TELADI TRADING TERMINAL -->
+		<!-- TODO: CORPORATE INTELLIGENCE SERVICES -->
+	</cues>
+</mdscript>
+
+

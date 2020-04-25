@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<content id="Event_driven_news" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" version="001" date="2020-04-25" save="0">
+	<text language="7" name="Event_driven_news" description="None" author="mrjonesandme" />
+	<text language="33" name="Event_driven_news" description="None" author="mrjonesandme" />
+	<text language="34" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="39" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy" author="mrjonesandme" />
+	<text language="44" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="49" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="55" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="81" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="82" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="86" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+	<text language="88" name="Event_driven_news" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
+</content>
