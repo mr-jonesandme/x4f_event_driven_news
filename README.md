@@ -17,6 +17,12 @@ The GNN feed reports on general galaxy wide events, logging into the player's "t
 - Sector ware shortage events
 - Sector ware surplus events
 
+### Additional planned GNN features
+- Basic UI for toggling news events on/off
+- Rumors regarding pirate raids targetting specific stations (by tapping into PlunderNet)
+- Rumors regarding Xenon I sightings
+- More variety/X lore friendly reporting
+
 ## Premium Feeds
 The following "premium" feeds are planned in a future update.  In contrast to the GNN feed, these will be more analytical in nature and help guide players in military and economic objectives
 ### Teladi Trading Terminal
