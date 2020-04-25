@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Users\tmarr\source\repos\X4Scripts\md.xsd">
 	<!-- This mod adds a variety of event driven gameplay news stories to the players logbook -->
 	<!-- Script logging schema -->
 	<!-- 2020-04-25 06:07:54 [EventKeyword] Event='Description' EventAction='Action that occured' <additional fields (Sector, PreviousFaction, NewFaction) Logbook='Visible to player or not' FeedType='Type of feed'-->
@@ -165,7 +165,7 @@
 		<cue name="Market_Chatter_Freighter_Needed" instantiate="true">
 			<conditions>
 				<event_cue_signalled/>
-				<check_value value="@event.param.{3} != faction.xenon"/>
+				<check_value value="@event.param.{3} != faction.xenon and @event.param.{3} != faction.scaleplate"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
@@ -188,13 +188,13 @@
 				<set_value name="$Ticker" exact="'GNN Markets'" />
 				<set_value name="$Headline" exact="'%1 logistics concerns'.[$Requester.knownname, $Ware]" />
 				<do_any>
-					<do_all weight="2">
+					<do_all weight="5">
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Transportation issue\' EventAction=\'Freighter requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
-					<do_all weight="98">
+					<do_all weight="95">
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Transportation issue\' EventAction=\'Freighter requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
 				</do_any>
@@ -205,7 +205,7 @@
 		<cue name="Market_Chatter_Factory_Needed" instantiate="true">
 			<conditions>
 				<event_cue_signalled/>
-				<check_value value="@event.param.{3} != faction.xenon"/>
+				<check_value value="@event.param.{3} != faction.xenon and @event.param.{3} != faction.scaleplate"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
@@ -234,13 +234,13 @@
 				<set_value name="$Ticker" exact="'GNN Markets'" />
 				<set_value name="$Headline" exact="'Surge in demand for %2'.[$Requester.knownname, $Ware]" />
 				<do_any>
-					<do_all weight="5">
+					<do_all weight="30">
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Production Shortage\' EventAction=\'Factory requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
-					<do_all weight="95">
+					<do_all weight="70">
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Production Shortage\' EventAction=\'Factory requested\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
 				</do_any>
@@ -251,7 +251,7 @@
 		<cue name="Market_Chatter_Pause_Production" instantiate="true">
 			<conditions>
 				<event_cue_signalled/>
-				<check_value value="@event.param.{3} != faction.xenon"/>
+				<check_value value="@event.param.{3} != faction.xenon and @event.param.{3} != faction.scaleplate"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
@@ -283,13 +283,13 @@
 				<set_value name="$Ticker" exact="'GNN Markets'" />
 				<set_value name="$Headline" exact="'Bust in %2 prices'.[$Requester.knownname, $Ware]" />
 				<do_any>
-					<do_all weight="5">
+					<do_all weight="30">
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Excess Wares\' EventAction=\'Pause Production\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
-					<do_all weight="95">
+					<do_all weight="70">
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[FactionEconomy]' + ' ' + 'GameAge=\'%1\' Event=\'Excess Wares\' EventAction=\'Pause Production\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Requester.knownname, $Faction.knownname, $Ware]"/>
 					</do_all>
 				</do_any>
