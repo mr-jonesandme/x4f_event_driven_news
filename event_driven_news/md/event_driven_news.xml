@@ -301,7 +301,7 @@
 		<!-- <signal_objects object="player.galaxy" param="EDN__plunder_blown_cover" param2="'$target'" param3="$pirate_ship"/>-->
 		<cue name="Rumors_Pirate_Raid" instantiate="true">
 			<conditions>
-				<event_object_signalled object="player.galaxy" param="EDN__plunder_blown_cover" param2="'$target'" param3="$pirate_ship"/>
+				<event_object_signalled object="player.galaxy" param="'EDN__plunder_blown_cover'" param2="'$target'" param3="$pirate_ship"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
