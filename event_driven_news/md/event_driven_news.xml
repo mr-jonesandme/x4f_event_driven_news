@@ -318,10 +318,10 @@
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
-						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname $Pirate.knownname]"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname, $Pirate.knownname]"/>
 					</do_all>
 					<do_all weight="5">
-						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname $Pirate.knownname]"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname, $Pirate.knownname]"/>
 					</do_all>
 				</do_any>
 			</actions>
