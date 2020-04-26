@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<diff>
+	<!-- Watch for factions hiring pirates to hit up other stations to get their wares -->
+	<!-- [$Faction.knownname, $Contractor.knownname, $Contractor, $Ware.name, $Mark.knownname, $Mark, $Mark.sector.knownname, $Mark.cluster.knownname, $FenceStation.knownname, $FenceStation, $FenceStation.sector.knownname, $FenceStation.cluster.knownname]"-->
+	<add sel="//cue[@name='HireContractor']/actions/commandeer_object[@object='$Contractor']" pos="before">
+		<signal_cue_instantly cue="md.Event_driven_news.Rumors_Pirate_Raid" param="[$Ware, $FenceStation, $Faction, $Contractor, $Mark]"/>
+	</add>
+</diff>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<content id="Event_driven_news" name="Event Driven News" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" version="101" date="2020-04-25" save="0">
+<content id="Event_driven_news" name="Event Driven News" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" version="102" date="2020-04-25" save="0">
 	<text language="7" name="Event Driven News" description="None" author="mrjonesandme" />
 	<text language="33" name="Event Driven News" description="None" author="mrjonesandme" />
 	<text language="34" name="Event Driven News" description="Dynamically generated news events based on ongoing activity in the galaxy"  author="mrjonesandme" />
