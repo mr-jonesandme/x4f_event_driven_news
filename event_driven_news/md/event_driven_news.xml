@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Users\tmarr\source\repos\X4Scripts\md.xsd">
+<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<!-- This mod adds a variety of event driven gameplay news stories to the players logbook -->
 	<!-- Script logging schema -->
 	<!-- 2020-04-25 06:07:54 [EventKeyword] Event='Description' EventAction='Action that occured' <additional fields (Sector, PreviousFaction, NewFaction) Logbook='Visible to player or not' FeedType='Type of feed'-->
@@ -276,7 +276,7 @@
 						<set_value name="$Body" exact="'%1 and REDACTED wares are overflowing the cargo bays today in the REDACTED station in REDACTED sector. Want to fill in the blanks and earn more profitsss?  Purchase a Teladi Trading Terminal today! TTT - the finest in economic reports, trades rumors, and production analysis in the galaxy.'.[$Ware, $Requester.knownname]"/>
 						<set_value name="$Body" exact="'%1 Sector security is dealing with increased occurences of civil disturbances, after local stations were forced to lay off a large percentage of their work forces.  Station managers say they regret the decision but, due to local economic conditions, they were forced to shut down production lines for %2 due to lack of demand'.[$Requester.knownname, $Ware]"/>
 						<set_value name="$Body" exact="'An anonymous Teladi freighter captain shared with us today that demand appears to be falling off for %2 in some %1 sectors.  Unfortunately, due to agreements made with this Teladi, we are only making the precise details about this situation available in your nearest Teladi Trading Terminal.  Consider buying a subscription today!'.[$Faction.knownname, $Ware]"/>
-						<set_value name="$Body" exact="'%3 officials would like to remind all recently unemployed %2 manufacturers that professional begging is not an acceptable career alternative.  Please report to the nearest sector unemployment office for placement at a new factory'.[$Ware, $Faction.knownname]"/>
+						<set_value name="$Body" exact="'%2 officials would like to remind all recently unemployed %1 manufacturers that professional begging is not an acceptable career alternative.  Please report to the nearest sector unemployment office for placement at a new factory'.[$Ware, $Faction.knownname]"/>
 						<set_value name="$Body" exact="'Companies specialized in the production of %2 are starting to feel squeezed as the cost and time to produce exceed the value of the end product in some sectors of %3 space'.[$Requester.knownname, $Ware, $Faction.knownname]"/>
 					</do_any>
 				</do_else>
@@ -295,47 +295,33 @@
 				</do_any>
 			</actions>
 		</cue>
-		<!--GNN Rumors. Free version of the intel feed.  Greatly reduced info available if target is player owned -->
-		<!-- <signal_cue_instantly cue="md.Event_driven_news.Rumors_Pirate_Raid" param="[$Ware, $FenceStation, $Faction, $Contractor, $Mark]>-->
+		<!--GNN Rumors. Free version of the intel feed. Reports come in after, say, a pirate has it's cover blown and not before -->
+		
+		<!-- Pirate ship has its cover blown while attempting to hack a station-->
+		<!-- <signal_objects object="player.galaxy" param="EDN__plunder_blown_cover" param2="'$target'" param3="$pirate_ship"/>-->
 		<cue name="Rumors_Pirate_Raid" instantiate="true">
 			<conditions>
-				<event_cue_signalled/>
-				<check_value value="@event.param.{3} != faction.xenon"/>
+				<event_object_signalled object="player.galaxy" param="EDN__plunder_blown_cover" param2="'$target'" param3="$pirate_ship"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
-				<set_value name="$Ware" exact="event.param.{1}"/>
-				<set_value name="$Requester" exact="event.param.{2}"/>
-				<set_value name="$Faction" exact="event.param.{3}"/>
-				<set_value name="$Contractor" exact="event.param.{4}"/>
-				<set_value name="$Target" exact="event.param.{5}"/>
-				<do_if value="$Mark.isplayerowned">
-					<do_any>
-						<set_value name="$Body" exact="'An ex-intelligence officer shared with us over drinks at a bar that unscrupulous contractors working for %1 are considering hacking assets controlled by %2 to fufill a lucrative supply contract. '.[$Faction.knownname, $Mark.trueowner]"/>
-						<set_value name="$Body" exact="'Rumors stemming from a recent increase of chatter over known pirate frequencies indicate that a local SCA gang is putting together a heist team to harvest %1 from %2.  Further information is unclear at this time.'.[$Ware, $Mark.trueowner]"/>
-						<set_value name="$Body" exact="'%1 intelligence officials have shared with us that they have been tipped off by an informant concerning an inbound SCA raid.  Allegedly, the target of the raid will be stations controlled by %2.  No other details were made available to us at this time.'.[$Faction.knownname, $Mark.trueowner]"/>
-						<set_value name="$Body" exact="'Shortwave bursts on known SCA frequencies indicate a possible raid about to take place against minor factions, such as %1, in order to fill a supply contract for %2'.[$Mark.trueowner, $Ware]"/>
-					</do_any>
-				</do_if>
-				<do_else>
-					<do_any>
-						<set_value name="$Body" exact="'A former intelligence officer has let slip that %1 has allegedly contracted local criminal gangs to hack stations to obtain %2. This information remains unverified at this time'.[$FenceStation.knownname, $Ware]"/>
-						<set_value name="$Body" exact="'An SCA cell was brought down today by an undisclosed factions narcotics division.  They revealed to us a number of planned operations by the cell, including one which may yet still take place - an individual known as %1 has apparently been hired by %2 to hack %3 to obtain %4.  Pilots in %5 should be especially vigilant as the current whereabouts of the contractor are unknown'.[$Contractor.knownname, $FenceStation.knownname, $Mark.knownname, $Ware, $Mark.sector.knownname]"/>
-						<set_value name="$Body" exact="'This just in - we are receiving a BOLO from %1 security services.  Any pilot who is able to identify a %2, please relay the pilots ship registration number -immediately- to your nearest %1 defense station.  Do not approach and do not engage unless in possession of a police license'.[$Faction.knownname, $Contractor.knownname]"/>
-						<set_value name="$Body" exact="'Station operators and security teams in %1 are advised to remain vigilant.  Sector security has informed us of a heightened alert regarding a possible impending pirate raid led by an individual known as %2'.[$Mark.sector.knownname, $Contractor.knownname]"/>
-					</do_any>
-				</do_else>
-				<set_value name="$Ticker" exact="'GNN Rumors'" />
-				<set_value name="$Headline" exact="'Criminal activity'.[$Requester.knownname, $Ware]" />
+				<set_value name="$Target" exact="event.param2"/>
+				<set_value name="$Pirate" exact="event.param3"/>
 				<do_any>
-					<do_all weight="30">
+					<set_value name="$Body" exact="'%1 sector security have requested that we forward on the following message to all licensed bounty hunters.  --- MESSAGE BEGINS Attention, all pilots in possession of a %2 police license, please be on the lookout for a vessel with the following registration: %3.  Vessel was last known to be in %1 and is wanted for assault, unauthorized access of computer systems, attempted theft, and refusal of inspection.  Target was last seen attempting to steal cargo from %4 .  Lethal force is authorized.  Bounty payable upon proof of destruction or apprehension of target. --- MESSAGE ENDS  '.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname]"/>
+					<set_value name="$Body" exact="'This just in from the sectory security in %1.  A known criminal was caught attempting to steal cargo from %2.  Police are interested in any and all information that may lead to the apprehension of the suspect.  The suspect was last spotted flying a illegally modified %3 operated by %4 in %5 '.[$Target.trueowner, $Target.knownname, $Pirate.knownname, $Pirate.trueowner, $Target.sector.knownname]"/>
+				</do_any>
+				<set_value name="$Ticker" exact="'GNN CrimeWatch'" />
+				<set_value name="$Headline" exact="'Bounty issued by police'" />
+				<do_any>
+					<do_all weight="95">
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
-						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Rumors]' + ' ' + 'GameAge=\'%1\' Event=\'PlunderNet\' EventAction=\'Contractor hired\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Contractor=\'%5\' TargetFaction=\'%6\' TargetStation=\'%7\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, FenceStation.knownname, $Faction.knownname, $Ware, $Contractor.knownname, $Mark.trueowner, $Mark.knownname]"/>
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname $Pirate.knownname]"/>
 					</do_all>
-					<do_all weight="70">
-						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Rumors]' + ' ' + 'GameAge=\'%1\' Event=\'PlunderNet\' EventAction=\'Contractor hired\' Requester=\'%2\' Faction=\'%3\' Ware=\'%4\' Contractor=\'%5\' TargetFaction=\'%6\' TargetStation=\'%7\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, FenceStation.knownname, $Faction.knownname, $Ware, $Contractor.knownname, $Mark.trueowner, $Mark.knownname]"/>
+					<do_all weight="5">
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname $Pirate.knownname]"/>
 					</do_all>
 				</do_any>
 			</actions>
