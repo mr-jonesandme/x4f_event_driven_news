@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Users\tmarr\source\repos\X4Scripts\md.xsd">
+<mdscript name="Event_driven_news" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<!-- This mod adds a variety of event driven gameplay news stories to the players logbook -->
 	<!-- Script logging schema -->
 	<!-- 2020-04-25 06:07:54 [EventKeyword] Event='Description' EventAction='Action that occured' <additional fields (Sector, PreviousFaction, NewFaction) Logbook='Visible to player or not' FeedType='Type of feed'-->
