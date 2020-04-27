@@ -298,30 +298,32 @@
 		<!--GNN Rumors. Free version of the intel feed. Reports come in after, say, a pirate has it's cover blown and not before -->
 		
 		<!-- Pirate ship has its cover blown while attempting to hack a station-->
-		<!-- <signal_objects object="player.galaxy" param="EDN__plunder_blown_cover" param2="'$target'" param3="$pirate_ship"/>-->
+		<!-- <signal_objects object="player.galaxy" param="EDN__plunder_blown_cover" param2="$target" param3="$pirate_ship"/>-->
 		<cue name="Rumors_Pirate_Raid" instantiate="true">
 			<conditions>
-				<event_object_signalled object="player.galaxy" param="'EDN__plunder_blown_cover'" param2="'$target'" param3="$pirate_ship"/>
+				<event_object_signalled object="player.galaxy" param="'EDN__plunder_blown_cover'"/>
 			</conditions>
 			<actions>
 				<set_value name="$GameAge" exact="player.age"/>
 				<set_value name="$Target" exact="event.param2"/>
 				<set_value name="$Pirate" exact="event.param3"/>
 				<do_any>
-					<set_value name="$Body" exact="'%1 sector security have requested that we forward on the following message to all licensed bounty hunters.  --- MESSAGE BEGINS Attention, all pilots in possession of a %2 police license, please be on the lookout for a vessel with the following registration: %3.  Vessel was last known to be in %1 and is wanted for assault, unauthorized access of computer systems, attempted theft, and refusal of inspection.  Target was last seen attempting to steal cargo from %4 .  Lethal force is authorized.  Bounty payable upon proof of destruction or apprehension of target. --- MESSAGE ENDS  '.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname]"/>
-					<set_value name="$Body" exact="'This just in from the sectory security in %1.  A known criminal was caught attempting to steal cargo from %2.  Police are interested in any and all information that may lead to the apprehension of the suspect.  The suspect was last spotted flying a illegally modified %3 operated by %4 in %5 '.[$Target.trueowner, $Target.knownname, $Pirate.knownname, $Pirate.trueowner, $Target.sector.knownname]"/>
+					<set_value name="$Body" exact="'%2 has issued a bounty approved by sector security for all legally licensed hunters...Target name: %3 , Target ID: %5, Target vessel class: %6.  Vessel was last spotted in %1 attempting to steal cargo from %4 .  Lethal force is authorized.  Bounty payable upon proof of destruction of target. Reminder - target must be scanned before engaging'.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname, $Pirate.idcode, $Pirate.class]"/>
+					<set_value name="$Body" exact="'Civilian pilots in %1 should proceed with caution - a known criminal was spotted recently attempting to steal cargo fom %4 in the same system.  Sector security has provided us with the following details, and would like to remind all hunters with an active police license that a reward is payable upon target destruction. Forged registration name: %3, known ship ID: %5, known ship class: %6. Pilots are reminded that a scan of the target prior to engaging is required. '.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname, $Pirate.idcode, $Pirate.class]"/>
+					<set_value name="$Body" exact="'WARNING: known criminal operating in %1 with a forged ship registration - %3, ID:%5.  Civilian and commercial pilots should proceed with caution.  Combat pilots and hunters with a valid police license are authorized to dispense justice provided a scan is performed first.'.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname, $Pirate.idcode, $Pirate.class]"/>
+					<set_value name="$Body" exact="'All pilots are advised to be on the lookout for a ship with a forged registration - %3, ID noted as %5.  This vessel was behaving suspiciously near %4 in %1 and is wanted for suspected theft of cargo.'.[$Target.sector.knownname, $Target.trueowner, $Pirate.knownname, $Target.knownname, $Pirate.idcode, $Pirate.class]"/>
 				</do_any>
 				<set_value name="$Ticker" exact="'GNN CrimeWatch'" />
-				<set_value name="$Headline" exact="'Bounty issued by police'" />
+				<set_value name="$Headline" exact="'Bounty issued by police for ' + $Pirate.idcode" />
 				<do_any>
-					<do_all weight="95">
+					<do_all weight="5">
 						<write_to_logbook category="tips" title="$Ticker + '-' + $Headline" text="$Body"/>
 						<show_notification text="$Ticker + '-' + $Headline" timeout="10s"/>
 						<play_sound object="player.entity" sound="'notification_generic'"/>
 						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'True\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname, $Pirate.knownname]"/>
 					</do_all>
-					<do_all weight="5">
-						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname, $Pirate.knownname]"/>
+					<do_all weight="95">
+						<debug_to_file name="'gnnlog.log'" directory="'gnn'" text="player.systemtime.{'%Y-%m-%d %H:%M:%S'} + ' ' + '[Crime]' + ' ' + 'GameAge=\'%1\' Event=\'Pirate\' EventAction=\'Cover blown\' Target=\'%2\' Sector=\'%3\' Pirate=\'%4\' PirateID=\'%5\' Logbook=\'False\' FeedType=\'GNN\' '.[$GameAge, $Target.knownname, $Target.sector.knownname, $Pirate.knownname, $Pirate.idcode]"/>
 					</do_all>
 				</do_any>
 			</actions>

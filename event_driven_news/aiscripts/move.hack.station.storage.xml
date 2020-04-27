@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <diff>
-	<!-- Pirate ship had cover blown (or target was destroyed) while attempting to hack station storage -->
-	<add sel="//interrupts/handler/actions/set_value[@name='$fleeing']" pos="after">
+	<!-- Pirate dropping cover after hack to collect crates -->
+	<add sel="//set_object_hacked" pos="after">
 		<set_value name="$pirate_ship" exact="this.ship" />
 		<!--Fire a signal the event_driven_news pirate blown cover script is waiting for-->
-		<signal_objects object="player.galaxy" param="'EDN__plunder_blown_cover'" param2="'$target'" param3="$pirate_ship"/>
-		<remove_value name="$pirate_ship" />
+		<signal_objects object="player.galaxy" param="'EDN__plunder_blown_cover'" param2="$target" param3="$pirate_ship"/>
 	</add>
 </diff>
