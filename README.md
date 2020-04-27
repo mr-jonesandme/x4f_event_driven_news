@@ -1,4 +1,4 @@
-# Event Driven News v1.0.1
+# Event Driven News v1.0.2
 
 Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035
 
@@ -10,6 +10,12 @@ Place the 'event_driven_news' folder into your X4 Foundations extensions folder.
 On a brand new game start, you will receive faction HQ destruction news events after the universe first initializes.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
 
 ## Change Log
+
+### 1.0.2
+- Added a new GNN "channel" - CrimeWatch
+- Added a new "bounty" story to the CrimeWatch channel.  If a pirate successfully hacks a station cargo module, there is a slight chance of a dynamic news entry being created for this event
+- Various bugfixes to existing news events
+
 ### 1.0.1
 - Removed SCA from ware shortage/surplus/shipping events - a news network probably shouldn't be reporting on SCA logistics 
 - Bumped up frequency of ware surplus/shortage events, was too low
@@ -22,21 +28,27 @@ Initial release
 Currently, there is one active feed - GNN
 
 ### GNN 
-The GNN feed reports on general galaxy events, logging into the player's "tips" logbook. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
+The GNN feed reports on general galaxy events, logging into the player's "tips" logbook with the headline split by category. This is your basic barebones news feed and is available to all from the start.  For balancing purposes, it will not be as precise as one of the planned "premium" feeds, but adds life to the universe and gives some indication to the player as to what sectors are experiencing.  The GNN feed currently reports based off the following types of events:
+#### GNN Politics 
 - Sector ownership changes (includes player faction)
 - Rebuilt faction HQ's (NPC factions only)
+
+#### GNN MarketTalk
 - Sector ware shipping issues (NPC factions, excluding Xenon)
 - Sector ware shortage events (NPC factions, excluding Xenon)
 - Sector ware surplus events (NPC factions, excluding Xenon)
 
+#### GNN CrimeWatch
+- Pirate activity as it pertains to the theft of cargo from station storage
+
 ### Additional planned GNN features
-- Basic UI for toggling news events on/off
-- Rumors regarding pirate raids targetting specific stations (by tapping into PlunderNet)
+- Basic UI for toggling news events on/off by category
 - Rumors regarding Xenon I sightings
 - More variety/X lore friendly reporting
 
 ## Premium Feeds
 The following "premium" feeds are planned in a future update.  In contrast to the GNN feed, these will be more analytical in nature and help guide players in military and economic objectives
+
 ### Teladi Trading Terminal
 This will be a license available from a friendly Teladi for some change.  It will provide more precise economy related event topics, making it easier for industry focused players to respond to dynamic pricing events.  These events are likely to arrive sooner and contain information that a player is able to act on to bring in more profitsss
 
