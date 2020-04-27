@@ -34,9 +34,9 @@ The GNN feed reports on general galaxy events, logging into the player's "tips" 
 - Rebuilt faction HQ's (NPC factions only)
 
 #### GNN MarketTalk
-- Sector ware shipping issues (NPC factions, excluding Xenon)
-- Sector ware shortage events (NPC factions, excluding Xenon)
-- Sector ware surplus events (NPC factions, excluding Xenon)
+- Sector ware shipping issues (NPC factions, excluding Xenon & SCA)
+- Sector ware shortage events (NPC factions, excluding Xenon & SCA)
+- Sector ware surplus events (NPC factions, excluding Xenon & SCA)
 
 #### GNN CrimeWatch
 - Pirate activity as it pertains to the theft of cargo from station storage
