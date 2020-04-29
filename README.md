@@ -12,7 +12,7 @@ On a brand new game start, you will receive faction HQ destruction news events a
 ## Change Log
 
 ### 1.0.3
-- Fixed a bug in factionlogic_economy patch (thanks to DeadAir) which broke factionlogic from actually pausing production modules in the game universe
+- Fixed a bug in factionlogic_economy patch which broke factionlogic from actually pausing production modules in the game universe (thanks DeadAir for catching this!)
 
 ### 1.0.2
 - Added a new GNN "channel" - CrimeWatch
