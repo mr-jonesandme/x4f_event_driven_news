@@ -11,7 +11,10 @@
 		<signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Factory_Needed" param="[$Ware, $RequestSector, $Faction]"/>
 	</add>
 	<!-- Watch for factions requesting a pause of production modules due to overflowing wares.  Indicates ware surplus -->
-	<add sel="//cue[@name='Pause_Production_Module']/actions/do_elseif[@value='$Product.tags.indexof.{tag.minable}']" pos="before">
-		<signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Pause_Production" param="[$Product, $RequestSector, $Faction]"/>
-	</add>
+    <add sel="//cue[@name='Pause_Production_Module']/actions/do_elseif[@value='$Product.tags.indexof.{tag.minable}']/cancel_cue" pos="before">
+        <signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Pause_Production" param="[$Product, $RequestSector, $Faction]"/>
+    </add>
+    <add sel="//cue[@name='Pause_Production_Module']/actions/do_else/do_if[@value='$Station']/debug_text" pos="before">
+        <signal_cue_instantly cue="md.Event_driven_news.Market_Chatter_Pause_Production" param="[$Product, $RequestSector, $Faction]"/>
+    </add>
 </diff>
