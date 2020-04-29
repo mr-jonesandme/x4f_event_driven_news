@@ -1,4 +1,4 @@
-# Event Driven News v1.0.2
+# Event Driven News v1.0.3
 
 Event Driven News is a mod for X4 which adds dynamic event based news and reports to the game.  Forum link - https://forum.egosoft.com/viewtopic.php?f=181&t=426035
 
@@ -10,6 +10,9 @@ Place the 'event_driven_news' folder into your X4 Foundations extensions folder.
 On a brand new game start, you will receive faction HQ destruction news events after the universe first initializes.  I'm aware of this issue and need to add in some kind of timer to suppress the very first, but not subsequent, faction HQ change events
 
 ## Change Log
+
+### 1.0.3
+- Fixed a bug in factionlogic_economy patch (thanks to DeadAir) which broke factionlogic from actually pausing production modules in the game universe
 
 ### 1.0.2
 - Added a new GNN "channel" - CrimeWatch
